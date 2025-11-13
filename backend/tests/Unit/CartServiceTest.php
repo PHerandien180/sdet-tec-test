@@ -32,6 +32,9 @@ class CartServiceTest extends TestCase
             );
 
         $result = $this->cartService->addToCart(1, 123, 2);
+
+        //ISSUE : Test allows negatives and quantity and asserts success
+        //a Cart should reject negative quantities , validation missing
         
         $this->assertTrue($result['success']);
         $this->assertEquals('Item added to cart', $result['message']);
@@ -59,6 +62,8 @@ class CartServiceTest extends TestCase
         ];
 
         $cartServiceMock = $this->createMock(CartService::class);
+
+        //ISSUE : Using a mock for a calculation prevents actual logic test
         $cartServiceMock
             ->expects($this->once())
             ->method('calculateCartTotal')
@@ -104,7 +109,7 @@ class CartServiceTest extends TestCase
         $beforeTime = time();
         $result = $this->cartService->updateCartItem(1, 123, 5);
         $afterTime = time();
-        
+        //ISSUE : Only compares before/after time , does not assert DB Update Happend
         $this->assertTrue($beforeTime <= $afterTime);
         $this->assertTrue($result['success']);
     }
@@ -116,5 +121,6 @@ class CartServiceTest extends TestCase
             ->with('DELETE FROM cart WHERE user_id = ?', [1]);
 
         $this->cartService->clearCart(1);
+        //ISSUE : No Assertions on method result ; test only calls method
     }
 }
