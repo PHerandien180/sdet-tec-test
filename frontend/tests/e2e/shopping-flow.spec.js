@@ -1,6 +1,6 @@
 describe('Shopping Flow E2E Tests', () => {
   beforeEach(() => {
-    cy.visit('/')
+    cy.visit('/') //Resets state before each test
   })
 
   it('should allow user to browse and add products to cart', () => {
@@ -18,10 +18,12 @@ describe('Shopping Flow E2E Tests', () => {
     })
     
     cy.get('[data-testid="cart-button"]').should('contain', '1')
+
+    //ISSUE : Logic logic is repeated in many tests , Should use a customn command to avoid duplicates
   })
 
   it('should update cart total when items are added', () => {
-    cy.login('test@example.com', 'password') 
+    cy.login('test@example.com', 'password') // Like this one Custom Command
     
     cy.visit('/products')
     
@@ -30,13 +32,15 @@ describe('Shopping Flow E2E Tests', () => {
     cy.get('[data-testid="cart-button"]').click()
     
     cy.get('.cart-total').should('contain', '$')
+
+    //ISSUE: Does not assert total value , only expects presence of $
   })
 
   it('should show correct product details', () => {
     cy.visit('/products/1') 
     
     cy.contains('Wireless Headphones').should('be.visible') 
-    cy.contains('$199.9900').should('be.visible') 
+    cy.contains('$199.9900').should('be.visible') //ISSUe format price seems to be incorrect
     cy.contains('50').should('be.visible') 
   })
 
@@ -96,11 +100,11 @@ describe('Shopping Flow E2E Tests', () => {
     
     cy.get('[data-testid="search-input"]').type('laptop')
     
-    cy.wait(2000)
+    cy.wait(2000) // ISSUE Hard coded wait should use cy.intercept
     
     cy.get('.product-card').should('contain', 'Laptop')
     
-    cy.wait(1000)
+    cy.wait(1000) //Another Hard coded wait
   })
 
   it('should navigate through product pages', () => {
@@ -111,5 +115,7 @@ describe('Shopping Flow E2E Tests', () => {
     cy.url().should('match', /\/products\/\d+$/)
     
     cy.get('.v-toolbar > .v-toolbar__content > .v-btn:first-child').click()
+
+    //ISSUE Navigation asserions is weak , should assert page content after navigating back
   })
 })
